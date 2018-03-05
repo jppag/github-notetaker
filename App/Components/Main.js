@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableHighlight,
   ActivityIndicator,
+  Animated,
+  Easing,
 } from 'react-native';
 
 import API from '../Utils/api';
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     color: '#6141F9',
     fontSize: 18,
-    marginTop: 60,
+    marginTop: 30,
     paddingTop: 10,
     paddingRight: 10,
     paddingBottom: 10,
@@ -66,12 +68,55 @@ class Main extends React.Component {
     };
   }
 
+  componentWillMount() {
+    this.animatedToTopTextValue = new Animated.Value(20);
+    this.animatedOpacityTextValue = new Animated.Value(0);
+    this.animatedToTopInputValue = new Animated.Value(20);
+    this.animatedOpacityInputValue = new Animated.Value(0);
+    this.animatedToTopButtonValue = new Animated.Value(20);
+    this.animatedOpacityButtonValue = new Animated.Value(0);
+  }
+
   componentDidMount() {
     this.setState({
       username: '',
       loading: false,
       error: false,
     });
+    
+    Animated.stagger(70, [
+      Animated.timing(this.animatedToTopTextValue, {
+        toValue: 0,
+        duration: 300,
+        easing: Easing.ease,
+      }),
+      Animated.timing(this.animatedOpacityTextValue, {
+        toValue: 1,
+        duration: 200,
+        easing: Easing.ease,
+      }),
+      Animated.timing(this.animatedToTopInputValue, {
+        toValue: 0,
+        duration: 300,
+        easing: Easing.ease,
+      }),
+      Animated.timing(this.animatedOpacityInputValue, {
+        toValue: 1,
+        duration: 200,
+        easing: Easing.ease,
+      }),
+      Animated.timing(this.animatedToTopButtonValue, {
+        toValue: 0,
+        duration: 300,
+        easing: Easing.ease,
+      }),
+      Animated.timing(this.animatedOpacityButtonValue, {
+        toValue: 1,
+        duration: 200,
+        easing: Easing.ease,
+      }),
+    ]).start();
+    
   }
 
   componentWillUnmount() {
@@ -116,21 +161,45 @@ class Main extends React.Component {
   }
 
 	render() {
+    const animatedToTopText = {
+      transform: [{
+        translateY: this.animatedToTopTextValue
+      }],
+      opacity: this.animatedOpacityTextValue,
+    };
+    const animatedToTopInput = {
+      transform: [{
+        translateY: this.animatedToTopInputValue
+      }],
+      opacity: this.animatedOpacityInputValue,
+    };
+    const animatedToTopButton = {
+      transform: [{
+        translateY: this.animatedToTopButtonValue
+      }],
+      opacity: this.animatedOpacityButtonValue,
+    };
 		return (
 			<View style={styles.container}>
-				<Text style={styles.title}>Search for a Github User</Text>
-        <TextInput
-          style={styles.searchInput}
-          value={this.state.username}
-          onChange={this.handleChange.bind(this)}
-        />
-        <TouchableHighlight
-          style={styles.button}
-          onPress={this.handleSubmitButton.bind(this)}
-          underlayColor='#27128e'
-        >
-          <Text style={styles.buttonText}>SEARCH</Text>
-        </TouchableHighlight>
+        <Animated.View style={animatedToTopText}>
+          <Text style={styles.title}>Search for a Github User</Text>
+        </Animated.View>
+        <Animated.View style={animatedToTopInput}>
+          <TextInput
+            style={styles.searchInput}
+            value={this.state.username}
+            onChange={this.handleChange.bind(this)}
+          />
+        </Animated.View>
+        <Animated.View style={animatedToTopButton}>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={this.handleSubmitButton.bind(this)}
+            underlayColor='#27128e'
+          >
+            <Text style={styles.buttonText}>SEARCH</Text>
+          </TouchableHighlight>
+        </Animated.View>
         {this.state.error &&
           <Text style={styles.text}>{this.state.error}</Text>
         }
